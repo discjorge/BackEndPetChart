@@ -1,15 +1,17 @@
 import db from "../client.js"
 
-export async function createMessage({user_id, vet_id, note, time_stamp, read_level}){
+//CREATE MESSAGE
+export async function createMessage({user_id, vet_id, note, read_level}){
     const sql=`
-    INSERT INTO messages(user_id, vet_id, note, time_stamp, read_level)
-    VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO messages(user_id, vet_id, note, read_level)
+    VALUES ($1, $2, $3, $4)
     RETURNING *
     `;
-    const {rows:message} = await db.query(sql, [user_id, vet_id, note, time_stamp, read_level]);
+    const {rows:message} = await db.query(sql, [user_id, vet_id, note, read_level]);
     return message[0]
 }
 
+//GET MESSAGES FOR USERS
 export async function getMessageByUser({user_id}){
     const sql=`
     SELECT *
@@ -20,6 +22,7 @@ export async function getMessageByUser({user_id}){
     return message
 }
 
+//GET MESSAGES FOR VETS
 export async function getMessageByVet({vet_id}) {
     const sql=`
     SELECT *
