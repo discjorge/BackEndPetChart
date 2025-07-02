@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS appointment;
+
 -- Appointment table
 CREATE TABLE appointment (
   id SERIAL PRIMARY KEY,
@@ -7,7 +10,6 @@ CREATE TABLE appointment (
   appointment_reason TEXT,
   time_stamp TIMESTAMP DEFAULT NOW()
 );
-DROP TABLE IF EXISTS messages;
 
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
