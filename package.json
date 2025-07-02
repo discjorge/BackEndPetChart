@@ -2,8 +2,14 @@
   "name": "back-end-petchart",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:schema": "psql -d petchart -f db/schema.sql",
+    "db:seed": "node --env-file=.env db/seed.js",
+    "db:reset": "npm run db:schema && npm run db:seed"
   },
   "repository": {
     "type": "git",
@@ -17,6 +23,10 @@
   "homepage": "https://github.com/BerleLBowen/Back-End-PetChart#readme",
   "description": "",
   "dependencies": {
-    "express": "^5.1.0"
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3"
   }
 }
