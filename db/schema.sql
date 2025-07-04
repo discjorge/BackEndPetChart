@@ -11,7 +11,8 @@ CREATE TABLE users (
     owner_name TEXT NOT NULL,
     animal TEXT NOT NULL,
     breed TEXT NOT NULL,
-    email TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
     address TEXT NOT NULL,
     pet_image_url TEXT
 );
@@ -19,6 +20,8 @@ CREATE TABLE users (
 -- Vets table
 CREATE TABLE vets (
     id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     profile_image_url TEXT NOT NULL
@@ -40,6 +43,5 @@ CREATE TABLE messages (
     vet_id INTEGER REFERENCES vets(id),
     note TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT Now(),
-    read_level INTEGER NOT NULL
-
+    seen BOOLEAN DEFAULT FALSE
 )
