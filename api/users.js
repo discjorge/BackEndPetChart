@@ -2,11 +2,48 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {createUser, getUserById, getUserByEmail} from "../db/queries/users.js";
+import {getVetByEmail} from "../db/queries/vets.js"; 
 import { verifyUserToken } from "../middleware/auth.js";
 
 
 const router = express.Router();
 const SALT_ROUNDS = 10;
+
+router.get("/check-user-type", async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email parameter required" });
+  }
+
+  try {
+    // Check if email exists in pet parent database
+    const petParent = await getUserByEmail(email);
+    if (petParent) {
+      return res.json({
+        exists: true,
+        userType: "pet-parent"
+      });
+    }
+
+    const veterinarian = await getVetByEmail(email);
+    if (veterinarian) {
+      return res.json({
+        exists: true,
+        userType: "veterinarian"
+      });
+    }
+
+    return res.json({
+      exists: false,
+      userType: null
+    });
+
+  } catch (error) {
+    console.error("Error checking user type:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 //users/register
 router.post("/register", async (req, res) => {
