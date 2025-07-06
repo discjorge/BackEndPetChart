@@ -7,6 +7,8 @@ Npm install bcrypt
 
 Npm install jsonwebtoken
 
+npm install cors
+
 
 Additional Setup Notes:
 Database is "petchart"
