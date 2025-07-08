@@ -26,7 +26,8 @@ const firstUser = await createUser({
     breed: "Lab", 
     email: "mike@email.com", 
     password: hashedPassword,
-    address: "123 House St."
+    address: "123 House St.",
+    pet_image_url:"https://image10.photobiz.com/8495/28_20220226150052_6422823_xlarge.jpg"
 
 })
 
