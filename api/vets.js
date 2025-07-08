@@ -3,13 +3,20 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { createVet, getVetByEmail, getVetById } from "../db/queries/vets.js";
 import { verifyVetToken } from "../middleware/auth.js";
+import multer from "multer";
 
 const router = express.Router();
 const SALT_ROUNDS = 10;
+const upload = multer({ dest: "uploads/" });
 
 // vets/register
-router.post("/register", async (req, res) => {
-  const { email, password, first_name, last_name, profile_image_url } = req.body;
+router.post("/register", upload.single("profile_image"), async (req, res) => {
+  const { email, password, first_name, last_name } = req.body;
+
+  let profile_image_url = null;
+  if (req.file) {
+    profile_image_url = `/uploads/${req.file.filename}`;
+  }
 
   if (!email || !password || !first_name || !last_name || !profile_image_url) return res.status(400).send({ error: "All fields required" });
 
