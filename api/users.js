@@ -4,12 +4,12 @@ import jwt from "jsonwebtoken";
 import {createUser, getUserById, getUserByEmail} from "../db/queries/users.js";
 import {getVetByEmail} from "../db/queries/vets.js"; 
 import { verifyUserToken } from "../middleware/auth.js";
-import multer from "multer";
+import multer from "multer"; 
 
 
 const router = express.Router();
 const SALT_ROUNDS = 10;
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "uploads/" }); 
 
 
 router.get("/check-user-type", async (req, res) => {
@@ -49,13 +49,13 @@ router.get("/check-user-type", async (req, res) => {
 });
 
 //users/register
-router.post("/register", upload.single("pet_image"), async (req, res) => {
+router.post("/register", upload.single("pet_image"), async (req, res) => { 
   const { pet_name, owner_name, animal, breed, email, address, password } = req.body;
 
-  let pet_image_url = null;
-  if (req.file) {
-    pet_image_url = `/uploads/${req.file.filename}`;
-  }
+  let pet_image_url = null; 
+  if (req.file) { 
+    pet_image_url = `/uploads/${req.file.filename}`; 
+  } 
 
   if (!email || !password) return res.status(400).send({ error: "Email and password required" });
 

@@ -9,7 +9,7 @@ Npm install jsonwebtoken
 
 npm install cors
 
-npm install multer
+npm install multer 
 
 Additional Setup Notes:
 Database is "petchart"
