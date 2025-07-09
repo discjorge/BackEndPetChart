@@ -2,15 +2,60 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {createUser, getUserById, getUserByEmail} from "../db/queries/users.js";
+import {getVetByEmail} from "../db/queries/vets.js"; 
 import { verifyUserToken } from "../middleware/auth.js";
+import multer from "multer"; 
 
 
 const router = express.Router();
 const SALT_ROUNDS = 10;
+const upload = multer({ dest: "uploads/" }); 
+
+
+router.get("/check-user-type", async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email parameter required" });
+  }
+
+  try {
+    // Check if email exists in pet parent database
+    const petParent = await getUserByEmail(email);
+    if (petParent) {
+      return res.json({
+        exists: true,
+        userType: "pet-parent"
+      });
+    }
+
+    const veterinarian = await getVetByEmail(email);
+    if (veterinarian) {
+      return res.json({
+        exists: true,
+        userType: "veterinarian"
+      });
+    }
+
+    return res.json({
+      exists: false,
+      userType: null
+    });
+
+  } catch (error) {
+    console.error("Error checking user type:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 //users/register
-router.post("/register", async (req, res) => {
+router.post("/register", upload.single("pet_image"), async (req, res) => { 
   const { pet_name, owner_name, animal, breed, email, address, password } = req.body;
+
+  let pet_image_url = null; 
+  if (req.file) { 
+    pet_image_url = `/uploads/${req.file.filename}`; 
+  } 
 
   if (!email || !password) return res.status(400).send({ error: "Email and password required" });
 
@@ -22,6 +67,9 @@ router.post("/register", async (req, res) => {
 
   const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET);
   res.send({ token });
+
+  console.log("BODY:", req.body);
+  console.log("FILE:", req.file);
 });
 
 //users/login
