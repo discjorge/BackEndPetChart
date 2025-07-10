@@ -46,7 +46,7 @@ export async function getAppointmentsByUser(user_id) {
 export async function getAppointmentsByVet(vet_id, user_id) {
   const sql = `
     SELECT * FROM appointments
-    WHERE vet_id = $1 AND $2
+    WHERE vet_id = $1 AND user_id = $2
     ORDER BY time
   `;
   const { rows } = await db.query(sql, [vet_id]);
