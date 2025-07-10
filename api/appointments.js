@@ -2,8 +2,12 @@ import express from "express";
 import {
   createAppointment,
   getAllAppointments,
-  deleteAppointment,
+  getAppointmentsByUser,
+  getAppointmentsByVet,
+  getAppointmentById,
 } from "../db/queries/appointments.js";
+import { getUserById } from "../db/queries/users.js";
+import { getVetById } from "../db/queries/vets.js";
 
 const router = express.Router();
 
@@ -35,3 +39,100 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch appointments" });
   }
 });
+
+// GET /appointments/user/:userId — Get all appointments for a specific user
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const appointments = await getAppointmentsByUser(userId);
+    res.json(appointments);
+  } catch (err) {
+    console.error("Error fetching user appointments:", err);
+    res.status(500).json({ error: "Failed to fetch user appointments" });
+  }
+});
+
+// GET /appointments/vets/:vetId — Get all appointments for a specific vet
+router.get("/vets/:vetId", async (req, res) => {
+  try {
+    const { vetId } = req.params;
+    const appointments = await getAppointmentsByVet(vetId);
+    res.json(appointments);
+  } catch (err) {
+    console.error("Error fetching vet appointments:", err);
+    res.status(500).json({ error: "Failed to fetch vet appointments" });
+  }
+});
+
+// GET /appointments/vets/:vetId/patients — Get all users with pet info for a specific vet
+router.get("/vets/:vetId/patients", async (req, res) => {
+  try {
+    console.log("Fetching patients for vet ID:", req.params.vetId);
+    const { vetId } = req.params;
+    const appointments = await getAppointmentsByVet(vetId);
+    console.log("Found appointments:", appointments);
+    
+    // Get unique users and their details
+    const uniqueUsers = [];
+    const seenUserIds = new Set();
+    
+    for (const appointment of appointments) {
+      if (!seenUserIds.has(appointment.user_id)) {
+        const user = await getUserById(appointment.user_id);
+        console.log("Found user:", user);
+        uniqueUsers.push({
+          user_id: user.id,
+          owner_name: user.owner_name,
+          pet_name: user.pet_name,
+          animal: user.animal,
+          breed: user.breed,
+          email: user.email,
+          pet_image_url: user.pet_image_url
+        });
+        seenUserIds.add(appointment.user_id);
+      }
+    }
+    
+    console.log("Returning unique users:", uniqueUsers);
+    res.json(uniqueUsers);
+  } catch (err) {
+    console.error("Error fetching vet patients:", err);
+    res.status(500).json({ error: "Failed to fetch vet patients" });
+  }
+});
+
+// GET /appointments/:appointmentId/associations — Get user and vet info for an appointment
+router.get("/:appointmentId/associations", async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const appointment = await getAppointmentById(appointmentId);
+    
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    const user = await getUserById(appointment.user_id);
+    const vet = await getVetById(appointment.vet_id);
+
+    res.json({
+      appointment,
+      user: {
+        id: user.id,
+        owner_name: user.owner_name,
+        pet_name: user.pet_name,
+        email: user.email
+      },
+      vet: {
+        id: vet.id,
+        first_name: vet.first_name,
+        last_name: vet.last_name,
+        email: vet.email
+      }
+    });
+  } catch (err) {
+    console.error("Error fetching appointment associations:", err);
+    res.status(500).json({ error: "Failed to fetch appointment associations" });
+  }
+});
+
+export default router;
