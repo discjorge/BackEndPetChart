@@ -4,7 +4,7 @@ import { verifyUserToken, verifyVetToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/user", verifyUserToken, async (req, res,) => { // Middleware on this line
+router.get("/user", verifyUserToken, async (req, res,) => { 
     const userID = req.user.userId;
     if (!userID){
         return res.status(404).send({error: "ID not found"});

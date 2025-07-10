@@ -43,7 +43,7 @@ export async function getAppointmentsByUser(user_id) {
 }
 
 // Get appointments for vet
-export async function getAppointmentsByVet(vet_id, user_id) {
+export async function getAppointmentsByVet(vet_id) {
   const sql = `
     SELECT * FROM appointments
     WHERE vet_id = $1 AND user_id = $2
@@ -51,4 +51,14 @@ export async function getAppointmentsByVet(vet_id, user_id) {
   `;
   const { rows } = await db.query(sql, [vet_id]);
   return rows;
+}
+
+// Get appointment by ID
+export async function getAppointmentById(id) {
+  const sql = `
+    SELECT * FROM appointments
+    WHERE id = $1
+  `;
+  const { rows } = await db.query(sql, [id]);
+  return rows[0];
 }
