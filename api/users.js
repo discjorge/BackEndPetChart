@@ -63,10 +63,10 @@ router.post("/register", upload.single("pet_image"), async (req, res) => {
   if (existing) return res.status(400).send({ error: "This Email already has an account" });
 
   const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-  const user = await createUser({pet_name, owner_name, animal, breed, email, address, password: hashed });
+  const user = await createUser({pet_name, owner_name, animal, breed, email, address, password: hashed, pet_image_url });
 
   const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET);
-  res.send({ token });
+  res.send({ token, user });
 
   console.log("BODY:", req.body);
   console.log("FILE:", req.file);

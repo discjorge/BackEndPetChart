@@ -9,6 +9,7 @@ import cors from "cors"
 dotenv.config();
 
 const app = express();
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use(cors({
   origin: true, 

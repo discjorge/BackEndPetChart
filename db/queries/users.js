@@ -1,13 +1,13 @@
 import db from "../client.js"
 
 //CREATE USER
-export async function createUser({pet_name, owner_name, animal, breed, email, password, address}){
+export async function createUser({pet_name, owner_name, animal, breed, email, password, address, pet_image_url}){
     const sql=`
-    INSERT INTO users (pet_name, owner_name, animal, breed, email, password, address)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO users (pet_name, owner_name, animal, breed, email, password, address, pet_image_url)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING *
     `;
-    const {rows:user} = await db.query(sql, [pet_name, owner_name, animal, breed, email, password, address]);
+    const {rows:user} = await db.query(sql, [pet_name, owner_name, animal, breed, email, password, address, pet_image_url]);
     return user[0]
 }
 //GET USER BY ID//
