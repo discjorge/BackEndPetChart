@@ -71,10 +71,10 @@ router.get("/vets/:vetId/patients", async (req, res) => {
     const { vetId } = req.params;
     const appointments = await getAppointmentsByVet(vetId);
     console.log("Found appointments:", appointments);
-    
+
     const uniqueUsers = [];
     const seenUserIds = new Set();
-    
+
     for (const appointment of appointments) {
       if (!seenUserIds.has(appointment.user_id)) {
         const user = await getUserById(appointment.user_id);
@@ -86,12 +86,12 @@ router.get("/vets/:vetId/patients", async (req, res) => {
           animal: user.animal,
           breed: user.breed,
           email: user.email,
-          pet_image_url: user.pet_image_url
+          pet_image_url: user.pet_image_url,
         });
         seenUserIds.add(appointment.user_id);
       }
     }
-    
+
     console.log("Returning unique users:", uniqueUsers);
     res.json(uniqueUsers);
   } catch (err) {
@@ -107,10 +107,10 @@ router.get("/user/:userId/vets", async (req, res) => {
     const { userId } = req.params;
     const appointments = await getAppointmentsByUser(userId);
     console.log("Found appointments:", appointments);
-    
+
     const uniqueVets = [];
     const seenVetIds = new Set();
-    
+
     for (const appointment of appointments) {
       if (!seenVetIds.has(appointment.vet_id)) {
         const vet = await getVetById(appointment.vet_id);
@@ -120,12 +120,12 @@ router.get("/user/:userId/vets", async (req, res) => {
           first_name: vet.first_name,
           last_name: vet.last_name,
           email: vet.email,
-          profile_image_url: vet.profile_image_url
+          profile_image_url: vet.profile_image_url,
         });
         seenVetIds.add(appointment.vet_id);
       }
     }
-    
+
     console.log("Returning unique vets:", uniqueVets);
     res.json(uniqueVets);
   } catch (err) {
@@ -139,7 +139,7 @@ router.get("/:appointmentId/associations", async (req, res) => {
   try {
     const { appointmentId } = req.params;
     const appointment = await getAppointmentById(appointmentId);
-    
+
     if (!appointment) {
       return res.status(404).json({ error: "Appointment not found" });
     }
@@ -153,14 +153,14 @@ router.get("/:appointmentId/associations", async (req, res) => {
         id: user.id,
         owner_name: user.owner_name,
         pet_name: user.pet_name,
-        email: user.email
+        email: user.email,
       },
       vet: {
         id: vet.id,
         first_name: vet.first_name,
         last_name: vet.last_name,
-        email: vet.email
-      }
+        email: vet.email,
+      },
     });
   } catch (err) {
     console.error("Error fetching appointment associations:", err);
