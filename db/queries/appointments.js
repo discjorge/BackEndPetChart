@@ -43,12 +43,32 @@ export async function getAppointmentsByUser(user_id) {
 }
 
 // Get appointments for vet
-export async function getAppointmentsByVet(vet_id, user_id) {
+export async function getAppointmentsByVet(vet_id) {
   const sql = `
     SELECT * FROM appointments
-    WHERE vet_id = $1 AND $2
+    WHERE vet_id = $1
     ORDER BY time
   `;
   const { rows } = await db.query(sql, [vet_id]);
   return rows;
+}
+
+// Get appointment by ID
+export async function getAppointmentById(id) {
+  const sql = `
+    SELECT * FROM appointments
+    WHERE id = $1
+  `;
+  const { rows } = await db.query(sql, [id]);
+  return rows[0];
+}
+
+export async function deleteAppointment(id) {
+  const sql = `
+    DELETE FROM appointments
+    WHERE id = $1
+    RETURNING *
+  `;
+  const { rows } = await db.query(sql, [id]);
+  return rows[0];
 }

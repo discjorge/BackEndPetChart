@@ -4,6 +4,7 @@ import { verifyUserToken, verifyVetToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
+
 //THIS ROUTE IF FOR USErS CREATING MESSAGES -mark
 router.post("/", verifyUserToken, async (req, res) => {
 const {user_id, vet_id, note, seen} = req.body;
@@ -38,6 +39,7 @@ router.post("/vet", verifyVetToken, async (req, res) => {
 
 
 //THIS ROUTE IS FOR GETTING ALL USER's MESSAGES FROM THE VET -mark
+
 router.get("/user", verifyUserToken, async (req, res,) => { 
     const userID = req.user.userId;
     if (!userID){
