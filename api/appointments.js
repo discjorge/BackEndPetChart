@@ -5,13 +5,14 @@ import {
   getAppointmentsByUser,
   getAppointmentsByVet,
   getAppointmentById,
+  deleteAppointment,
 } from "../db/queries/appointments.js";
 import { getUserById } from "../db/queries/users.js";
 import { getVetById } from "../db/queries/vets.js";
 
 const router = express.Router();
 
-// POST Create a new appointment
+//POST Create a new appointment
 router.post("/", async (req, res) => {
   const { user_id, vet_id, time, appointment_reason } = req.body;
 
@@ -29,7 +30,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET /appointments — Get all appointments
+//GET /appointments — Get all appointments
 router.get("/", async (req, res) => {
   try {
     const appointments = await getAllAppointments();
@@ -40,7 +41,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /appointments/user/:userId — Get all appointments for a specific user
+// GET /appointments/user/:userId
 router.get("/user/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -52,7 +53,7 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
-// GET /appointments/vets/:vetId — Get all appointments for a specific vet
+//GET /appointments/vets/:vetId
 router.get("/vets/:vetId", async (req, res) => {
   try {
     const { vetId } = req.params;
@@ -64,7 +65,7 @@ router.get("/vets/:vetId", async (req, res) => {
   }
 });
 
-// GET /appointments/vets/:vetId/patients — Get all users with pet info for a specific vet
+//GET /appointments/vets/:vetId/patients
 router.get("/vets/:vetId/patients", async (req, res) => {
   try {
     console.log("Fetching patients for vet ID:", req.params.vetId);
@@ -100,7 +101,7 @@ router.get("/vets/:vetId/patients", async (req, res) => {
   }
 });
 
-// GET /appointments/user/:userId/vets — Get all vets associated with a specific user
+//GET /appointments/user/:userId/vets
 router.get("/user/:userId/vets", async (req, res) => {
   try {
     console.log("Fetching vets for user ID:", req.params.userId);
@@ -134,7 +135,7 @@ router.get("/user/:userId/vets", async (req, res) => {
   }
 });
 
-// GET /appointments/:appointmentId/associations — Get user and vet info for an appointment
+// GET /appointments/:appointmentId/associations
 router.get("/:appointmentId/associations", async (req, res) => {
   try {
     const { appointmentId } = req.params;
@@ -165,6 +166,20 @@ router.get("/:appointmentId/associations", async (req, res) => {
   } catch (err) {
     console.error("Error fetching appointment associations:", err);
     res.status(500).json({ error: "Failed to fetch appointment associations" });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleted = await deleteAppointment(id);
+    if (!deleted) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+    res.status(204).end();
+  } catch (err) {
+    console.error("Error deleting appointment:", err);
+    res.status(500).json({ error: "Failed to delete appointment" });
   }
 });
 

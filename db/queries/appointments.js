@@ -62,3 +62,13 @@ export async function getAppointmentById(id) {
   const { rows } = await db.query(sql, [id]);
   return rows[0];
 }
+
+export async function deleteAppointment(id) {
+  const sql = `
+    DELETE FROM appointments
+    WHERE id = $1
+    RETURNING *
+  `;
+  const { rows } = await db.query(sql, [id]);
+  return rows[0];
+}
