@@ -45,13 +45,13 @@ export async function getMessagesBetweenVetAndUser({vet_id , user_id}) {
     const {rows:messages} = await db.query(sql, [vet_id, user_id]);
     return messages
 }
- export async function getUsersMessagedByVet(vet_id) {
+ export async function getUsersByAppointment(vet_id) {
     const sql=`
     SELECT DISTINCT users.id, users.owner_name, users.pet_name
-    FROM messages
-    JOIN users ON users.id = messages.user_id
-    WHERE messages.vet_id = $1;
+    FROM appointments
+    JOIN users ON appointments.user_id = users.id
+    WHERE appointments.vet_id = $1;
     `;
-    const {rows:messages} = await db.query(sql,[vet_id]);
-    return messages
+    const {rows:users} = await db.query(sql,[vet_id]);
+    return users
  }

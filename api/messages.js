@@ -1,5 +1,5 @@
 import express from "express";
-import { createMessage, getMessageByUser,getUsersMessagedByVet ,getMessagesBetweenVetAndUser, markMessageAsSeen } from "../db/queries/messages.js";
+import { createMessage, getMessageByUser,getMessagesBetweenVetAndUser ,getUsersByAppointment, markMessageAsSeen } from "../db/queries/messages.js";
 import { verifyUserToken, verifyVetToken } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -52,12 +52,12 @@ router.get("/user", verifyUserToken, async (req, res,) => {
 
 });
 
-//THIS ROUTE IS FOR GETTING ALL USERS THE VET HAS MESSAGED
+//THIS ROUTE IS FOR GETTING ALL USERS THE VET HAS AN APPOINTMENT WITH -mark
 router.get("/vet/users", verifyVetToken, async (req, res) => {
   const vetID = req.vet.vetId;
   if (!vetID) return res.status(404).json({ error: "Vet ID not found" });
 
-  const users = await getUsersMessagedByVet(vetID);
+  const users = await getUsersByAppointment(vetID);
   if (users.length === 0)
     return res.status(404).json({ message: "No messagesfound" });
 
