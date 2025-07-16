@@ -96,6 +96,6 @@ async function seed() {
     user_id: 1,
     vet_id: 1,
     note: "WOW! the first ever message!",
-    seen: false,
+    sender: "vet",
   });
 }
