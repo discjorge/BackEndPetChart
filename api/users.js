@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {createUser, getUserById, getUserByEmail} from "../db/queries/users.js";
 import {getVetByEmail} from "../db/queries/vets.js"; 
-import { verifyUserToken } from "../middleware/auth.js";
+import { verifyUserToken, verifyVetToken } from "../middleware/auth.js";
 import multer from "multer"; 
 
 
@@ -94,6 +94,12 @@ router.get("/account", verifyUserToken , async (req, res) => {
   res.send(user);
 });
 
+//Get for messages page -mark
+router.get("/:id", verifyVetToken, async (req, res) => {
+  const user = await getUserById(req.params.id);
+  if (!user) return res.status(404).json({ error: "User not found" });
+  res.send(user);
+});
 
 
 export default router;

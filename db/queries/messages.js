@@ -1,25 +1,14 @@
 import db from "../client.js"
 
 //CREATE MESSAGE
-export async function createMessage({user_id, vet_id, note, seen = false}){
+export async function createMessage({user_id, vet_id, note, sender}){
     const sql=`
-    INSERT INTO messages(user_id, vet_id, note, seen)
+    INSERT INTO messages(user_id, vet_id, note, sender)
     VALUES ($1, $2, $3, $4)
     RETURNING *
     `;
-    const {rows:message} = await db.query(sql, [user_id, vet_id, note, seen]);
+    const {rows:message} = await db.query(sql, [user_id, vet_id, note, sender]);
     return message[0]
-}
-
-export async function markMessageAsSeen(message_id) {
-  const sql = `
-    UPDATE messages
-    SET seen = true
-    WHERE id = $1
-    RETURNING *;
-  `;
-  const { rows:message } = await db.query(sql, [message_id]);
-  return message[0];
 }
 
 //GET MESSAGES FOR USERS
@@ -85,3 +74,4 @@ export async function getMessagesBetweenVetAndUser({vet_id , user_id}) {
     const {rows:users} = await db.query(sql,[vet_id]);
     return users
  }
+ 

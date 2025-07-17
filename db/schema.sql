@@ -43,5 +43,5 @@ CREATE TABLE messages (
     vet_id INTEGER REFERENCES vets(id),
     note TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT Now(),
-    seen BOOLEAN DEFAULT FALSE
+    sender TEXT CHECK (sender IN ('user', 'vet')) NOT NULL DEFAULT 'user'
 )

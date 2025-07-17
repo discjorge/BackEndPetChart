@@ -109,7 +109,7 @@ async function seed() {
     user_id: firstUser.id,
     vet_id: firstVet.id,
     note: "WOW! the first ever message!",
-    seen: false,
+    sender: "vet",
   });
 
   const secondMessage = await createMessage({

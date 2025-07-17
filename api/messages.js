@@ -1,21 +1,26 @@
 import express from "express";
-import { createMessage, getMessageByUser, getMessageByVet, getMessagesBetweenVetAndUser ,getUsersByAppointment, markMessageAsSeen } from "../db/queries/messages.js";
+import { createMessage, getMessageByUser,getMessagesBetweenVetAndUser ,getUsersByAppointment } from "../db/queries/messages.js";
 import { verifyUserToken, verifyVetToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
 
 //THIS ROUTE IF FOR USErS CREATING MESSAGES -mark
-router.post("/", verifyUserToken, async (req, res) => {
-const {user_id, vet_id, note, seen} = req.body;
+router.post("/user", verifyUserToken, async (req, res) => {
+  const { user_id, vet_id, note } = req.body;
 
-if(!user_id || !vet_id || !note || seen === undefined) {
-    return res.status(400).json({error: "Missing required params"})
-}
+  if (!user_id || !vet_id || !note) {
+    return res.status(400).json({ error: "Missing required params" });
+  }
 
-const message = await createMessage({user_id, vet_id, note, seen});
+  const message = await createMessage({
+    user_id,
+    vet_id,
+    note,
+    sender: "user",
+  });
 
-res.status(201).json(message);
+  res.status(201).json(message);
 });
 
 //THIS ROUTE IS FOR VETS CREATING MESSAGES -mark
@@ -31,9 +36,8 @@ router.post("/vet", verifyVetToken, async (req, res) => {
     user_id,
     vet_id: vetID,
     note,
-    seen: false,
+    sender: "vet",
   });
-
   res.status(201).json(message);
 });
 
@@ -73,9 +77,14 @@ router.get("/vet/users", verifyVetToken, async (req, res) => {
   const vetID = req.vet.vetId;
   if (!vetID) return res.status(404).json({ error: "Vet ID not found" });
 
+  console.log("Vet ID from token:", vetID);
+
+
   const users = await getUsersByAppointment(vetID);
   if (users.length === 0)
     return res.status(404).json({ message: "No messagesfound" });
+
+
 
   res.json(users);
 });
@@ -90,16 +99,5 @@ router.get("/vet/user/:userId", verifyVetToken, async (req, res) => {
   const messages = await getMessagesBetweenVetAndUser({ vet_id: vetID, user_id: userID });
   res.json(messages);
 });
-
-//THIS ROUTE MARKS MESSAGES AS SEEN -mark
-router.put("/:id/seen", async (req, res) =>{
-const messageID = parseInt(req.params.id);
-    if(!messageID)
-        returnres,status(400).json({error: "Invalid message ID" })
-
-    const updatedMessage = await markMessageAsSeen(messageID);
-    res.json(updatedMessage)
-});
-
 
 export default router;
