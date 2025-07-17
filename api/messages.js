@@ -58,6 +58,20 @@ router.get("/user", verifyUserToken, async (req, res,) => {
 
 });
 
+//THIS ROUTE IS FOR GETTING ALL MESSAGES FOR A VET -mark
+router.get("/vet", verifyVetToken, async (req, res) => {
+    const vetID = req.vet.vetId;
+    if (!vetID){
+        return res.status(404).send({error: "Vet ID not found"});
+    }
+
+    const messages = await getMessageByVet({vet_id: vetID});
+    if(messages.length === 0){
+        return res.status(404).json({message: "You have no messages yet"});
+    }
+    res.send(messages);
+});
+
 //THIS ROUTE IS FOR GETTING ALL USERS THE VET HAS AN APPOINTMENT WITH -mark
 router.get("/vet/users", verifyVetToken, async (req, res) => {
   const vetID = req.vet.vetId;
