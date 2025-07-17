@@ -14,19 +14,9 @@ export async function createMessage({user_id, vet_id, note, sender}){
 //GET MESSAGES FOR USERS
 export async function getMessageByUser({user_id}){
     const sql=`
-    SELECT 
-        m.id,
-        m.user_id,
-        m.vet_id,
-        m.note,
-        m.created_at,
-        m.seen,
-        v.first_name,
-        v.last_name
-    FROM messages m
-    JOIN vets v ON m.vet_id = v.id
-    WHERE m.user_id = $1
-    ORDER BY m.created_at DESC;
+       SELECT * FROM messages
+    WHERE user_id = $1
+    ORDER BY created_at DESC;
     `;
     const {rows:message} = await db.query(sql, [user_id]);
     return message
@@ -35,19 +25,9 @@ export async function getMessageByUser({user_id}){
 //GET MESSAGES FOR VETS
 export async function getMessageByVet({vet_id}){
     const sql=`
-    SELECT 
-        m.id,
-        m.user_id,
-        m.vet_id,
-        m.note,
-        m.created_at,
-        m.seen,
-        u.owner_name,
-        u.pet_name
-    FROM messages m
-    JOIN users u ON m.user_id = u.id
-    WHERE m.vet_id = $1
-    ORDER BY m.created_at DESC;
+    SELECT * FROM messages
+    WHERE vet_id = $1
+    ORDER BY created_at DESC;
     `;
     const {rows:messages} = await db.query(sql, [vet_id]);
     return messages
