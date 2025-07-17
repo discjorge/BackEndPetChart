@@ -16,12 +16,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Test route to verify server is working
-app.get('/test', (req, res) => {
-  console.log('Test route hit!');
-  res.json({ message: 'Server is working!' });
-});
-
 app.use("/appointments", appointmentsRouter)
 app.use("/users", usersRouter)
 app.use("/vets", vetsRouter)

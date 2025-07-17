@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-//GET /appointments — Get all appointments
+//GET /appointments — Get all appointments - this is the route that is used to get all the appointments
 router.get("/", async (req, res) => {
   try {
     const appointments = await getAllAppointments();
@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /appointments/user/:userId
+// GET /appointments/user/:userId - this is the route that is used to get the appointments for a user
 router.get("/user/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -53,7 +53,7 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
-//GET /appointments/vets/:vetId
+//Ash - GET /appointments/vets/:vetId - this is the route that is used to get the appointments for a vet
 router.get("/vets/:vetId", async (req, res) => {
   try {
     const { vetId } = req.params;
@@ -65,13 +65,11 @@ router.get("/vets/:vetId", async (req, res) => {
   }
 });
 
-//GET /appointments/vets/:vetId/patients
+//Ash - GET /appointments/vets/:vetId/patients - this is the route that is used to get the patients for a vet
 router.get("/vets/:vetId/patients", async (req, res) => {
   try {
-    console.log("Fetching patients for vet ID:", req.params.vetId);
     const { vetId } = req.params;
     const appointments = await getAppointmentsByVet(vetId);
-    console.log("Found appointments:", appointments);
 
     const uniqueUsers = [];
     const seenUserIds = new Set();
@@ -93,7 +91,6 @@ router.get("/vets/:vetId/patients", async (req, res) => {
       }
     }
 
-    console.log("Returning unique users:", uniqueUsers);
     res.json(uniqueUsers);
   } catch (err) {
     console.error("Error fetching vet patients:", err);
@@ -101,13 +98,11 @@ router.get("/vets/:vetId/patients", async (req, res) => {
   }
 });
 
-//GET /appointments/user/:userId/vets
+//Ash - GET /appointments/user/:userId/vets - this is the route that is used to get the vets for a user
 router.get("/user/:userId/vets", async (req, res) => {
   try {
-    console.log("Fetching vets for user ID:", req.params.userId);
     const { userId } = req.params;
     const appointments = await getAppointmentsByUser(userId);
-    console.log("Found appointments:", appointments);
 
     const uniqueVets = [];
     const seenVetIds = new Set();
@@ -127,7 +122,6 @@ router.get("/user/:userId/vets", async (req, res) => {
       }
     }
 
-    console.log("Returning unique vets:", uniqueVets);
     res.json(uniqueVets);
   } catch (err) {
     console.error("Error fetching user vets:", err);
@@ -135,7 +129,7 @@ router.get("/user/:userId/vets", async (req, res) => {
   }
 });
 
-// GET /appointments/:appointmentId/associations
+// Ash- GET /appointments/:appointmentId/associations - this is the route that is used to get the associations for an appointment
 router.get("/:appointmentId/associations", async (req, res) => {
   try {
     const { appointmentId } = req.params;

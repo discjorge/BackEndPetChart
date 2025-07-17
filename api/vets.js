@@ -9,7 +9,7 @@ const router = express.Router();
 const SALT_ROUNDS = 10;
 const upload = multer({ dest: "uploads/" }); 
 
-// vets/register
+// vets/register - this is the route that is used to register a new vet
 router.post("/register", upload.single("profile_image"), async (req, res) => {
   const { email, password, first_name, last_name, profile_image_url } = req.body;
 
@@ -30,7 +30,7 @@ router.post("/register", upload.single("profile_image"), async (req, res) => {
   res.send({ token });
 });
 
-// vets/login
+//vets/login - this is the route that is used to login a vet
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 

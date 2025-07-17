@@ -22,7 +22,7 @@ export async function getUserById(id){
 
 }
 
-//GET USER BY USERNAME **for log in??**
+//GET USER BY USERNAME - query for login - Ash
 
 export async function getUserByEmail(email){
     const sql = `

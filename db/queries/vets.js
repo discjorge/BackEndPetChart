@@ -23,7 +23,7 @@ export async function getVetById(id){
 
 }
 
-//GET VET BY Email **for log in**
+//GET VET BY Email - query for login - Ash
 
 export async function getVetByEmail(email){
     const sql = `

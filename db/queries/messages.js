@@ -53,7 +53,7 @@ export async function getMessageByVet({vet_id}){
     return messages
 }
 
-//GET MESSAGES FOR VETS 
+//Ash - GET MESSAGES FOR VETS -> allows vets to see all messages sent to them by a user on vet dashboard
 export async function getMessagesBetweenVetAndUser({vet_id , user_id}) {
     const sql=`
     SELECT *
@@ -64,6 +64,7 @@ export async function getMessagesBetweenVetAndUser({vet_id , user_id}) {
     const {rows:messages} = await db.query(sql, [vet_id, user_id]);
     return messages
 }
+
  export async function getUsersByAppointment(vet_id) {
     const sql=`
     SELECT DISTINCT users.id, users.owner_name, users.pet_name

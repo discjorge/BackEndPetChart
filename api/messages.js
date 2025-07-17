@@ -1,5 +1,5 @@
 import express from "express";
-import { createMessage, getMessageByUser,getMessagesBetweenVetAndUser ,getUsersByAppointment } from "../db/queries/messages.js";
+import { createMessage, getMessageByUser, getMessageByVet, getMessagesBetweenVetAndUser ,getUsersByAppointment } from "../db/queries/messages.js";
 import { verifyUserToken, verifyVetToken } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -58,7 +58,7 @@ router.get("/user", verifyUserToken, async (req, res,) => {
 
 });
 
-//THIS ROUTE IS FOR GETTING ALL MESSAGES FOR A VET -mark
+//THIS ROUTE IS FOR GETTING ALL MESSAGES FOR A VET -mark --refactor a bit to add the query for dashboard component messages - Ash
 router.get("/vet", verifyVetToken, async (req, res) => {
     const vetID = req.vet.vetId;
     if (!vetID){

@@ -81,7 +81,7 @@ async function seed() {
     appointment_reason: "Spike needs shots",
   });
 
-  // Additional appointments for vet@petchart.com
+  // Additional appointments for vet@petchart.com - Ash
   const secondAppointment = await createAppointment({
     user_id: firstUser.id,
     vet_id: firstVet.id,
@@ -104,7 +104,7 @@ async function seed() {
   });
 
   
-  // Messages from users to vet
+  // Messages from users to vet - Adding a lot more messages to test the dashboard component - Ash
   const firstMessage = await createMessage({
     user_id: firstUser.id,
     vet_id: firstVet.id,
@@ -147,7 +147,7 @@ async function seed() {
     seen: false,
   });
 
-  // Messages from vet to users
+  // Messages from vet to users - Adding a lot more messages to test the dashboard component - Ash
   const seventhMessage = await createMessage({
     user_id: firstUser.id,
     vet_id: firstVet.id,

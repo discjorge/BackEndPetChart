@@ -11,7 +11,7 @@ const router = express.Router();
 const SALT_ROUNDS = 10;
 const upload = multer({ dest: "uploads/" }); 
 
-
+//Ash - GET /users/check-user-type - this is the route that is used to check if a user is a pet parent or a veterinarian at login for differen dash UX
 router.get("/check-user-type", async (req, res) => {
   const { email } = req.query;
 
@@ -48,7 +48,7 @@ router.get("/check-user-type", async (req, res) => {
   }
 });
 
-//users/register
+//Ash -users/register - this is the route that is used to register a new user
 router.post("/register", upload.single("pet_image"), async (req, res) => { 
   const { pet_name, owner_name, animal, breed, email, address, password } = req.body;
 
@@ -68,11 +68,9 @@ router.post("/register", upload.single("pet_image"), async (req, res) => {
   const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET);
   res.send({ token, user });
 
-  console.log("BODY:", req.body);
-  console.log("FILE:", req.file);
 });
 
-//users/login
+//Ash - users/login - this is the route that is used to login a user
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
