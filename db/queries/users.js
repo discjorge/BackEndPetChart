@@ -34,3 +34,21 @@ export async function getUserByEmail(email){
     return user[0];
 
 }
+
+export async function getAllUsers(){
+    const sql = `
+    SELECT
+        id,
+        pet_name,
+        owner_name,
+        animal,
+        breed,
+        email,
+        address,
+        pet_image_url
+    FROM users
+    ORDER BY pet_name ASC;
+    `;
+    const {rows: users} = await db.query(sql);
+    return users;
+}

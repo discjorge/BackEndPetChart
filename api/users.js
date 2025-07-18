@@ -1,7 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {createUser, getUserById, getUserByEmail} from "../db/queries/users.js";
+import {createUser, getUserById, getUserByEmail, getAllUsers} from "../db/queries/users.js";
 import {getVetByEmail} from "../db/queries/vets.js"; 
 import { verifyUserToken, verifyVetToken } from "../middleware/auth.js";
 import multer from "multer"; 
@@ -99,6 +99,16 @@ router.get("/:id", verifyVetToken, async (req, res) => {
   res.send(user);
 });
 
+router.get("/", verifyVetToken, async (req, res) => {
+  try {
+    const users = await getAllUsers();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to fetch users",
+    });
+  }
+});
 
 export default router;
 

@@ -22,14 +22,46 @@ export async function getMessageByUser({user_id}){
     return message
 }
 
-//GET MESSAGES FOR VETS
-export async function getMessageByVet({vet_id}){
+//GET MESSAGES FOR USERS
+export async function getMessageByUsers({user_id}){
     const sql=`
-    SELECT * FROM messages
-    WHERE vet_id = $1
-    ORDER BY created_at DESC;
+      SELECT 
+        m.id,
+        m.user_id,
+        m.vet_id,
+        m.note,
+        m.created_at,
+        m.seen,
+        v.first_name,
+        v.last_name
+    FROM messages m
+    JOIN vets v ON m.vet_id = v.id
+    WHERE m.user_id = $1
+    ORDER BY m.created_at DESC;
     `;
-    const {rows:messages} = await db.query(sql, [vet_id]);
+    const {rows:message} = await db.query(sql, [user_id]);
+    return message
+}
+
+
+//GET MESSAGES FOR VETS
+export async function getMessageByVet({vet_id , user_id}) {
+    const sql=`
+    SELECT 
+        m.id,
+        m.user_id,
+        m.vet_id,
+        m.note,
+        m.created_at,
+        m.seen,
+        u.owner_name,
+        u.pet_name
+    FROM messages m
+    JOIN users u ON m.user_id = u.id
+    WHERE m.vet_id = $1
+    ORDER BY m.created_at DESC;
+    `;
+    const {rows:messages} = await db.query(sql, [vet_id, user_id]);
     return messages
 }
 

@@ -23,6 +23,7 @@ router.post("/user", verifyUserToken, async (req, res) => {
   res.status(201).json(message);
 });
 
+
 //THIS ROUTE IS FOR VETS CREATING MESSAGES -mark
 router.post("/vet", verifyVetToken, async (req, res) => {
   const vetID = req.vet.vetId;
@@ -57,6 +58,7 @@ router.get("/user", verifyUserToken, async (req, res,) => {
     res.send(messages);
 
 });
+
 
 //THIS ROUTE IS FOR GETTING ALL MESSAGES FOR A VET -mark --refactor a bit to add the query for dashboard component messages - Ash
 router.get("/vet", verifyVetToken, async (req, res) => {
