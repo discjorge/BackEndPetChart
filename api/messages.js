@@ -1,11 +1,17 @@
 import express from "express";
-import { createMessage, getMessageByUser, getMessageByVet, getMessagesBetweenVetAndUser ,getUsersByAppointment } from "../db/queries/messages.js";
+import {
+  createMessage,
+  getFullThreadForUser,
+  getFullThreadForVet,
+  getRecentMessagesForUser,
+  getRecentMessagesForVet,
+  getUsersByAppointment
+} from "../db/queries/messages.js";
 import { verifyUserToken, verifyVetToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-
-//THIS ROUTE IF FOR USErS CREATING MESSAGES -mark
+// USER SENDING MESSAGE - Mark
 router.post("/user", verifyUserToken, async (req, res) => {
   const { user_id, vet_id, note } = req.body;
 
@@ -23,8 +29,7 @@ router.post("/user", verifyUserToken, async (req, res) => {
   res.status(201).json(message);
 });
 
-
-//THIS ROUTE IS FOR VETS CREATING MESSAGES -mark
+// VET SENDING MESSAGE - Mark
 router.post("/vet", verifyVetToken, async (req, res) => {
   const vetID = req.vet.vetId;
   const { user_id, note } = req.body;
@@ -39,67 +44,72 @@ router.post("/vet", verifyVetToken, async (req, res) => {
     note,
     sender: "vet",
   });
+
   res.status(201).json(message);
 });
 
+// GET USER MESSAGE DASHBOARD -Mark
+router.get("/user", verifyUserToken, async (req, res) => {
+  const userID = req.user.userId;
+  if (!userID) return res.status(404).json({ error: "User ID not found" });
 
-//THIS ROUTE IS FOR GETTING ALL USER's MESSAGES FROM THE VET -mark
+  const messages = await getRecentMessagesForUser(userID);
+  if (messages.length === 0) {
+    return res.status(404).json({ message: "You have no messages yet" });
+  }
 
-router.get("/user", verifyUserToken, async (req, res,) => { 
-    const userID = req.user.userId;
-    if (!userID){
-        return res.status(404).send({error: "ID not found"});
-    }
-
-    const messages = await getMessageByUser({user_id: userID});
-    if(messages.length === 0){
-        return res.status(404).json({message: "You have no messages yet"});
-    }
-    res.send(messages);
-
+  res.json(messages);
 });
 
-
-//THIS ROUTE IS FOR GETTING ALL MESSAGES FOR A VET -mark --refactor a bit to add the query for dashboard component messages - Ash
+//  GET VET MESSAGE DASHBOARD -Mark
 router.get("/vet", verifyVetToken, async (req, res) => {
-    const vetID = req.vet.vetId;
-    if (!vetID){
-        return res.status(404).send({error: "Vet ID not found"});
-    }
+  const vetID = req.vet.vetId;
+  if (!vetID) return res.status(404).json({ error: "Vet ID not found" });
 
-    const messages = await getMessageByVet({vet_id: vetID});
-    if(messages.length === 0){
-        return res.status(404).json({message: "You have no messages yet"});
-    }
-    res.send(messages);
+  const messages = await getRecentMessagesForVet(vetID);
+  if (messages.length === 0) {
+    return res.status(404).json({ message: "You have no messages yet" });
+  }
+
+  res.json(messages);
 });
 
-//THIS ROUTE IS FOR GETTING ALL USERS THE VET HAS AN APPOINTMENT WITH -mark
+// GET USER MESSAGE CENTER THREAD -Mark
+router.get("/user/thread", verifyUserToken, async (req, res) => {
+  const userID = req.user.userId;
+
+  if (!userID) {
+    return res.status(400).json({ error: "Missing userID" });
+  }
+
+  const messages = await getFullThreadForUser(userID);
+  res.json(messages);
+});
+
+// GET VET MESSAGE CENTER THREAD -Mark
+router.get("/vet/thread/:userId", verifyVetToken, async (req, res) => {
+  const vetID = req.vet.vetId;
+  const userID = parseInt(req.params.userId);
+
+  if (!vetID || !userID) {
+    return res.status(400).json({ error: "Missing vet or user ID" });
+  }
+
+  const messages = await getFullThreadForVet(vetID, userID);
+  res.json(messages);
+});
+
+// GET USERS FOR VET USER MESSAGE LIST -Mark
 router.get("/vet/users", verifyVetToken, async (req, res) => {
   const vetID = req.vet.vetId;
   if (!vetID) return res.status(404).json({ error: "Vet ID not found" });
 
-  console.log("Vet ID from token:", vetID);
-
-
   const users = await getUsersByAppointment(vetID);
-  if (users.length === 0)
-    return res.status(404).json({ message: "No messagesfound" });
-
-
+  if (users.length === 0) {
+    return res.status(404).json({ message: "No messages found" });
+  }
 
   res.json(users);
-});
-
-//THIS ROUTE IS FOR VIEWING A SPECIFIC MESSAGE SENT BY A VET -mark
-router.get("/vet/user/:userId", verifyVetToken, async (req, res) => {
-  const vetID = req.vet.vetId;
-  const userID = parseInt(req.params.userId);
-  if (!vetID || !userID)
-    return res.status(400).json({ error: "Missing vet or user ID" });
-
-  const messages = await getMessagesBetweenVetAndUser({ vet_id: vetID, user_id: userID });
-  res.json(messages);
 });
 
 export default router;

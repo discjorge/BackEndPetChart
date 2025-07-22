@@ -116,35 +116,35 @@ async function seed() {
     user_id: firstUser.id,
     vet_id: firstVet.id,
     note: "Spike has been acting strange lately, should I be concerned?",
-    seen: true,
+    sender: "user",
   });
 
   const thirdMessage = await createMessage({
     user_id: secondUser.id,
     vet_id: firstVet.id,
     note: "Fluffy's vaccinations are due next week, can we schedule an appointment?",
-    seen: false,
+    sender: "user",
   });
 
   const fourthMessage = await createMessage({
     user_id: secondUser.id,
     vet_id: firstVet.id,
     note: "Fluffy seems to be eating less than usual, is this normal?",
-    seen: true,
+    sender: "user",
   });
 
   const fifthMessage = await createMessage({
     user_id: thirdUser.id,
     vet_id: firstVet.id,
     note: "Alfred's wellness exam is coming up, any special preparations needed?",
-    seen: false,
+    sender: "user",
   });
 
   const sixthMessage = await createMessage({
     user_id: thirdUser.id,
     vet_id: firstVet.id,
     note: "Alfred has been more energetic lately, should I increase his exercise?",
-    seen: false,
+    sender: "user",
   });
 
   // Messages from vet to users - Adding a lot more messages to test the dashboard component - Ash
@@ -152,41 +152,41 @@ async function seed() {
     user_id: firstUser.id,
     vet_id: firstVet.id,
     note: "Hi Mike! Spike's blood work results came back normal. See you at the next appointment!",
-    seen: false,
+    sender: "vet",
   });
 
   const eighthMessage = await createMessage({
     user_id: firstUser.id,
     vet_id: firstVet.id,
     note: "Don't forget Spike's flea and tick prevention this month!",
-    seen: true,
+    sender: "vet",
   });
 
   const ninthMessage = await createMessage({
     user_id: secondUser.id,
     vet_id: firstVet.id,
     note: "Alice, Fluffy's appointment is confirmed for next Tuesday at 2:30 PM.",
-    seen: false,
+    sender: "vet",
   });
 
   const tenthMessage = await createMessage({
     user_id: secondUser.id,
     vet_id: firstVet.id,
     note: "Fluffy's weight is perfect! Keep up the good work with his diet.",
-    seen: false,
+    sender: "vet",
   });
 
   const eleventhMessage = await createMessage({
     user_id: thirdUser.id,
     vet_id: firstVet.id,
     note: "Ashley, Alfred's wellness exam is scheduled for January 17th at 11:00 AM.",
-    seen: false,
+    sender: "vet",
   });
 
   const twelfthMessage = await createMessage({
     user_id: thirdUser.id,
     vet_id: firstVet.id,
     note: "Alfred's increased energy is a great sign! More exercise is definitely beneficial.",
-    seen: false,
+    sender: "vet",
   });
 }
